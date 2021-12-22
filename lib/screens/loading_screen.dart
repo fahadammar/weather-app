@@ -8,6 +8,13 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getLocation();
+  }
+
   void getLocation() async {
     // To get the current location
     var checkPermission = await Geolocator.checkPermission();
@@ -15,10 +22,27 @@ class _LoadingScreenState extends State<LoadingScreen> {
     if (checkPermission == LocationPermission.denied) {
       await Geolocator.requestPermission();
     }
+    checkPermission = await Geolocator.checkPermission();
+    if (checkPermission == LocationPermission.always ||
+        checkPermission == LocationPermission.whileInUse) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low);
+      print("CurrentLocation: $position");
+    }
+  }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
-    print("CurrentLocation: $position");
+  void buttonLocationTap() async {
+    var checkPermission = await Geolocator.checkPermission();
+    if (checkPermission == LocationPermission.denied) {
+      await Geolocator.requestPermission();
+    }
+    checkPermission = await Geolocator.checkPermission();
+    if (checkPermission == LocationPermission.always ||
+        checkPermission == LocationPermission.whileInUse) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low);
+      print("CurrentLocation: $position");
+    }
   }
 
   @override
@@ -28,7 +52,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: RaisedButton(
           onPressed: () {
             //Get the current location
-            getLocation();
+            buttonLocationTap();
           },
           child: Text('Get Location'),
         ),
